@@ -1,0 +1,14 @@
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    user:
+    password:
+    pool:
+      enabled: true
+      #连接池最大连接数
+      max-connections: 5
+      #空闲的连接过期时间，默认为30秒
+      idle-timeout: 1
+  # 设置支持topic
+  jms:
+    pub-sub-domain: true

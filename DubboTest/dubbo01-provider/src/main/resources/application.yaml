@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: dubbo-provider
+dubbo:
+  scan:
+    base-packages: com.eason.dubbo.service
+  protocol:
+    port: 666
+    host: 127.0.0.1
+  registry:
+    address: zookeeper://192.168.79.133:2181
+

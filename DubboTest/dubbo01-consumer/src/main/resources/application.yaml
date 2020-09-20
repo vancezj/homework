@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: dubbo-consumer
+dubbo:
+  scan:
+    base-packages: com.eason.dubbo.service
+  registry:
+    address: zookeeper://192.168.79.133:2181
+
