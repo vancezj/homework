@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: springboot-admin-server
+  boot:
+    admin:
+      url: http://localhost:${server.port}
+      notify:
+        mail:
+          #收件邮箱
+          to: 305418774@qq.com
+          # 发件邮箱
+          from: 305418774@qq.com
+  # 邮件设置
+  mail:
+    host: smtp.qq.com
+    username: 305418774@qq.com
+    password: drqqilbxivtrbhgh
+    properties:
+      mail:
+        smpt:
+          auth: true
+          starttls:
+            enable: true
+            required: true

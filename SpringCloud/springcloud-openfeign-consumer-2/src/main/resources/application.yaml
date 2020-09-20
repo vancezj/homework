@@ -1,0 +1,79 @@
+# Tomcat 端口
+server:
+  port: 8082
+
+# application 必须一致
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8080
+  application:
+    name: openfeign-consumer
+  cloud:
+    client:
+      ipAddress: 192.168.58.1
+  #zipkin
+  zipkin:
+    base-url: http://localhost:9411/
+  #采样比例1
+  sleuth:
+    sampler:
+      rate: 1
+
+eureka:
+  instance:
+    # Eureka注册服务列表显示 IP + 端口
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
+
+# Feign默认支持Ribbon；Ribbon的重试机制和Feign的重试机制有冲突，
+# 所以源码中默认关闭Feign的重试机制,使用Ribbon的重试机制
+ribbon:
+  # 连接超时时间(ms)
+  ConnectTimeou: 1000
+  # 业务逻辑超时时间(ms)
+  ReadTimeout: 1000
+  #同一台实例最大重试次数,不包括首次调用
+  MaxAutoRetries: 2
+  #重试负载均衡其他的实例最大重试次数,不包括首次调用
+  MaxAutoRetriesNextServer: 3
+  #是否所有操作都重试
+  OkToRetryOnAllOperations: false
+
+# 开启 hystrix
+feign:
+  hystrix:
+    enabled: true
+
+# 开启监控信息的所有节点 *代表所有节点都加载
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 启动路由查看信息, 默认为true，可以省略
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    routes:
+      enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        #断路器的超时时间,下级服务返回超出熔断器时间，即便成功，消费端消息也是TIMEOUT,所以一般断路器的超时时间需要大于ribbon的超时时间。
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            # 服务的返回时间大于ribbon的超时时间，会触发重试
+            # 默认=1000，太小 Hystrix 超时时间需要大于 Feign 超时时间，否则 Feign重试会失效
+            timeoutInMilliseconds: 6000
+  dashboard:
+    proxy-stream-allow-list: '*'

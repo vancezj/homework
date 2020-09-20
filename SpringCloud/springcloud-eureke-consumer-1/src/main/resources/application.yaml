@@ -1,0 +1,52 @@
+# Tomcat 端口
+server:
+  port: 8083
+
+# application 必须一致
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8080
+  application:
+    name: eureka-consumer
+  cloud:
+    client:
+      ipAddress: 192.168.58.1
+  #zipkin
+  zipkin:
+    base-url: http://localhost:9411/
+  #采样比例1
+  sleuth:
+    sampler:
+      rate: 1
+
+eureka:
+  instance:
+    # Eureka注册服务列表显示 IP + 端口
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
+  client:
+    service-url:
+      # defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      # eureka 所有操作都基于Restful协议, 指定eureka端口
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
+
+# 针对服务定 指定ribbon配置负载均衡
+EurekaProvider:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+
+# 开启监控信息的所有节点 *代表所有节点都加载
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 启动路由查看信息, 默认为true，可以省略
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    routes:
+      enabled: true

@@ -1,0 +1,55 @@
+# Tomcat 端口
+server:
+  port: 7012
+
+# application 必须一致
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8080
+  application:
+    name: eureka-provider
+  cloud:
+    client:
+      ipAddress: 192.168.58.1
+  #zipkin
+  zipkin:
+    base-url: http://localhost:9411/
+    #采样比例1
+  sleuth:
+    sampler:
+      rate: 1
+
+eureka:
+  instance:
+    # Eureka注册服务列表显示 IP + 端口
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${spring.application.name}:${server.port}
+  client:
+    # 是否将自己注册到Eureka Server,默认为true，由于当前就是server，故而设置成false，表明该服务不会向eureka注册自己的信息
+    register-with-eureka: true
+    # 是否从eureka server获取注册信息，由于单节点，不需要同步其他节点数据，用false
+    fetch-registry: true
+    service-url:
+      # defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      # eureka 所有操作都基于Restful协议, 指定eureka端口
+      # defaultZone: http://admin:admin@eureka7001.com:7001/eureka/
+      defaultZone: http://eureka7001.com:7001/eureka/
+    # 开启健康检查
+    healthcheck:
+      enabled: true
+
+# 开启监控信息的所有节点 *代表所有节点都加载
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  # 启动路由查看信息, 默认为true，可以省略
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    routes:
+      enabled: true
